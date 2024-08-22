@@ -2,7 +2,7 @@
 
 describe('5 user stories', () =>{
     
-    it('first user story', () => {
+    it('Create task', () => {
       //As a user, I want to be able to add a task.
         
         cy.visit('/')
@@ -20,7 +20,7 @@ describe('5 user stories', () =>{
 
     })
 
-    it('second user story', () => {
+    it('Delete task', () => {
         // As a user, I want to be able to delete a task.
   
         cy.visit('/')
@@ -44,7 +44,7 @@ describe('5 user stories', () =>{
   
       })
 
-    it('third user story', () => {
+    it('Edit task', () => {
         //As a user, I want to be able to edit a task.
 
         cy.visit('/')
@@ -76,8 +76,8 @@ describe('5 user stories', () =>{
 
     })
 
-    it('Fourth user story', () => {
-        //As a user, I want to be able to mark a task as complete / incomplete.
+    it('Complete task', () => {
+        //As a user, I want to be able to mark a task as complete.
 
         cy.visit('/')
         cy.get('[placeholder="Task Title"]').type('Task 1')
@@ -108,6 +108,46 @@ describe('5 user stories', () =>{
         // As a user, I want to be able to filter tasks by label
 
         cy.visit('/')
+
+        // Array of task 
+        const tasks = [
+            { title: 'Task 1', description: 'do task 1', importance: 'Low', label: 'Social' },
+            { title: 'Task 2', description: 'do task 2', importance: 'High', label: 'Work' },
+            { title: 'Task 3', description: 'do task 3', importance: 'Low', label: 'Home' },
+            { title: 'Task 4', description: 'do task 4', importance: 'Medium', label: 'Social' },
+            { title: 'Task 5', description: 'do task 5', importance: 'Low', label: 'Work' },
+            { title: 'Task 6', description: 'do task 6', importance: 'Low', label: 'Home' },
+        ]
+
+        // Adding tasks
+        tasks.forEach(task => {
+            cy.get('[placeholder="Task Title"]').type(task.title)
+            cy.get('[placeholder="Task Description"]').type(task.description)
+            cy.get('select.p-2.border.rounded-md').eq(0).select(task.importance)
+            cy.get('select.p-2.border.rounded-md').eq(1).select(task.label)
+            cy.get('[type="submit"]').click()
+        })
+
+        // Filter tasks by label and check if only the correct tasks are displayed
+        const filterAndCheckTasks = (label, expectedTasks) => {
+            
+            // Select the label
+            cy.get('[class="p-2 border rounded-md"]').select(label) // Assuming the filter dropdown is the 3rd select
+
+            // Verify that only tasks with the selected label are visible
+            cy.get('[class="text-lg font-semibold"]').each((task, index) => {
+                cy.wrap(task).should('have.text', expectedTasks[index].title)
+            })
+        }
+
+        // Filter by "Social" and verify the task
+        filterAndCheckTasks('Social', [{ title: 'Task 1'},{ title: 'Task 4' }])
+
+        // Filter by "Work" and verify the task
+        filterAndCheckTasks('Work', [{ title: 'Task 2'}, { title: 'Task 5' }])
+
+        // Filter by "Home" and verify the task
+        filterAndCheckTasks('Home', [{ title: 'Task 3'}, { title: 'Task 6' }])
 
     })
 

@@ -2,7 +2,7 @@
 
 describe('Regression test suite', () =>{
     
-    it('first test', () => {
+    it('Importance changed after task edited', () => {
         cy.visit('/')
 
         // Add a task with title and description
@@ -34,7 +34,7 @@ describe('Regression test suite', () =>{
 
     })
 
-    it('second test', () => {
+    it('Description persistance', () => {
          cy.visit('/')
 
          // Add a task with title and description
@@ -63,7 +63,7 @@ describe('Regression test suite', () =>{
         
     })
 
-    it('third test', () => {
+    it('Task reapearence after refresh', () => {
         cy.visit('/')
 
         // Add a task with title and description
